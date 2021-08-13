@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - mongo-prod:/data/db
+    env_file:
+      - ./config/production.env
+  frontend:
+    image: "notes-frontend-prod"
+    build:
+      context: ./client
+      dockerfile: Dockerfile.production
+    ports:
+      - "80:80"
+    env_file:
+      - ./config/production.env
+  backend:
+    image: "notes-backend-prod"
+    build:
+      context: ./server
+      dockerfile: Dockerfile.production
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    env_file:
+      - ./config/production.env
+volumes:
+  mongo-prod:
